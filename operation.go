@@ -3,6 +3,7 @@ package bitwiser
 import (
 	"github.com/pkg/errors"
 	"math"
+	"fmt"
 )
 
 //===================================================
@@ -71,16 +72,28 @@ type bytewiseOp struct {
 }
 
 //===================================================
-// Methods bitwiseOp
+// Methods Bytes
 //===================================================
 
 func (y Bytes) ToInt() int {
 	s := int(0)
 	for i, v := range y.b {
-		s += int(v)*(256^i)
+		s += int(v)*int(math.Pow(256.0, float64(y.s-i-1)))
 	}
 	return s
 }
+
+func (y Bytes) Array() []byte {
+	return y.b
+}
+
+func (y Bytes) ToString() string {
+	return fmt.Sprintf("0x%x", y.b)
+}
+
+//===================================================
+// Methods bytewiseOp
+//===================================================
 
 func (o *bytewiseOp) check(a Bytes, b Bytes) error{
 	if a.s != b.s {

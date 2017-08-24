@@ -103,14 +103,16 @@ import (
   "github.com/aristofanio/bitwiser"
 )
 
-func main(){
+func main() {
   //
-  a := []byte{0x01, 0x11, 0x00}// 0x011100
-  b := []byte{0x00, 0x00, 0x11}// 0x000011
+  x := []byte{0x01, 0x11, 0x00} // 0x011100
+  y := []byte{0x00, 0x00, 0x11} // 0x000011
   //
   op := bitwiser.NewByteOperation()
-  rs := op.Or(bitwiser.Bytes{a, len(a)}, bitwiser.Bytes{b, len(b)})
-  println(fmt.Sprintf("0x%x", rs)) //output: 0x011111
+  rs, _ := op.Or(bitwiser.NewBytes(x), bitwiser.NewBytes(y))
+  println(fmt.Sprintf("0x%x", rs.Array()))  //output: 0x011111
+  println(rs.ToString())                    //output: 0x011111
+  println(rs.ToInt())                       //output: 69905 (base 10)
 }
 ```
 

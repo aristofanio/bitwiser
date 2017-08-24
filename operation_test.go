@@ -130,6 +130,7 @@ func TestBytewiseOp_And(t *testing.T) {
 		r, e := op.And(v.a, v.b)
 		if e != nil {
 			t.Errorf("Test#%d: %s with error %s", k, "op.And", e.Error())
+			continue
 		}
 		//
 		if r.ToInt() != v.c.ToInt() {
@@ -164,6 +165,7 @@ func TestBytewiseOp_Or(t *testing.T) {
 		r, e := op.Or(v.a, v.b)
 		if e != nil {
 			t.Errorf("Test#%d: %s with error %s", k, "op.Or", e.Error())
+			continue
 		}
 		//
 		if r.ToInt() != v.c.ToInt() {
@@ -197,6 +199,7 @@ func TestBytewiseOp_Xor(t *testing.T) {
 		r, e := op.Xor(v.a, v.b)
 		if e != nil {
 			t.Errorf("Test#%d: %s with error %s", k, "op.Xor", e.Error())
+			continue
 		}
 		//
 		if r.ToInt() != v.c.ToInt() {
@@ -228,6 +231,7 @@ func TestBytewiseOp_Not(t *testing.T) {
 		r, e := op.Not(v.a)
 		if e != nil {
 			t.Errorf("Test#%d: %s with error %s", k, "op.Not", e.Error())
+			continue
 		}
 		//
 		if r.ToInt() != v.c.ToInt() {
@@ -268,6 +272,7 @@ func TestBytewiseOp_ShiftLeft(t *testing.T) {
 		r, e := op.ShiftLeft(v.a, v.b)
 		if e != nil {
 			t.Errorf("Test#%d: %s with error %s", k, "op.ShiftLeft", e.Error())
+			continue
 		}
 		//
 		if r.ToInt() != v.c.ToInt() {
@@ -309,12 +314,53 @@ func TestBytewiseOp_ShiftRight(t *testing.T) {
 		r, e := op.ShiftRight(v.a, v.b)
 		if e != nil {
 			t.Errorf("Test#%d: %s with error %s", k, "op.ShiftRight", e.Error())
+			continue
 		}
 		//
 		if r.ToInt() != v.c.ToInt() {
 			t.Errorf("Test#%d: %s with error. Expected: 0x%x. Result: 0x%x", k, "op.ShiftRight", v.c.b, r.b)
 		} else {
 			t.Logf("Test#%d: %s with success. Expected: 0x%x. Result: 0x%x", k, "op.ShiftRight", v.c.b, r.b)
+		}
+	}
+}
+
+func TestParseFromBits(t *testing.T) {
+	//
+	inOut := []struct {
+		a string
+		b int
+		c error
+	}{
+		{"011100", 28, nil},
+		{"0 1110 1010 1101 1001", 60121, nil},
+		{"0 1110 1010 1101 1001a", -1, ErrBadFormat},
+		{"01-110 1110 1010 1101 1001", -1, ErrBadFormat},
+		{"01 110 1110 1010 1101 1001", 977625, nil}, //auto-fix for 0000 1110 1110 1010 1101 1001
+	}
+	//
+	for k, v := range  inOut {
+		//
+		b, err := ParseFromBits(v.a)
+		if v.c == nil && err != nil {
+			t.Errorf("%s", err.Error())
+			continue
+		}
+		if v.c != nil {
+			if err == nil {
+				t.Errorf("Expected an error: %s, but not occured", v.c.Error())
+				continue
+			} else if v.c.Error() != err.Error(){
+				t.Errorf("Expected an error: %s, but occured %s", v.c.Error(), err.Error())
+				continue
+			}
+			t.Logf("Test#%d: %s with success (negative). Expected: %s. Result: %s", k, "ParseFromBits", v.c, err.Error())
+		} else {
+			if b.ToInt() != v.b {
+				t.Errorf("Number inválid. Expected %d. Result: %d", v.b, b.ToInt())
+			} else {
+				t.Logf("Test#%d: %s with success. Expected: 0x%x. Result: 0x%x", k, "ParseFromBits", v.b, b.ToInt())
+			}
 		}
 	}
 }

@@ -116,4 +116,30 @@ func main() {
 }
 ```
 
+Parse Bytes from string (of bits)
+```Go
+package main
+
+import (
+	"github.com/aristofanio/bitwiser"
+)
+
+func main() {
+	//
+	b0, _ := bitwiser.ParseFromBits("0  011100")     //auto-complete for 8-multiple --> 0001 1100
+	b1, _ := bitwiser.ParseFromBits("0001 1100")     //remove spaces                --> 0001 1100
+	b2, _ := bitwiser.ParseFromBits("1 001 1100")    //remove spaces and fix size   --> 1001 1100
+	b3, _ := bitwiser.ParseFromBits("0001001 1100")  //remove spaces and fix size   --> 0000 1001 1100
+	b4, _ := bitwiser.ParseFromBits("11111001 1100") //remove spaces and fix size   --> 1111 1001 1100
+	b5, _ := bitwiser.ParseFromBits("1101001 1100")  //remove spaces and fix size   --> 0110 1001 1100
+	//
+	println(b0.ToString()) //output: 0x1c   (len(array) = 1byte)
+	println(b1.ToString()) //output: 0x1c   (len(array) = 1byte)
+	println(b2.ToString()) //output: 0x9c   (len(array) = 1byte)
+	println(b3.ToString()) //output: 0x009c (len(array) = 2bytes)
+	println(b4.ToString()) //output: 0x0f9c (len(array) = 2bytes)
+	println(b5.ToString()) //output: 0x069c (len(array) = 2bytes)
+}
+```
+
 

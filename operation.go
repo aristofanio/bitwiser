@@ -4,6 +4,9 @@ import (
 	"github.com/pkg/errors"
 	"math"
 	"fmt"
+	"strings"
+	"regexp"
+	"strconv"
 )
 
 //===================================================
@@ -52,6 +55,9 @@ func (o *bitwiseOp) ShiftRight (a byte, n uint)byte{
 //===================================================
 // ByteOperation
 //===================================================
+
+var  ErrBadFormat = errors.New("Bad formatted bits representation")
+var  ErrInMatchString = errors.New("Internal error in MatchString operation")
 
 type Bytes struct {
 	b []byte
@@ -194,6 +200,38 @@ func NewBitOperation() BitOperation {
 
 func NewBytes(bs []byte) Bytes {
 	return Bytes{bs, len(bs)}
+}
+
+func ParseFromBits(bs string) (Bytes, error) {
+	//replace spaces
+	nbs := strings.Replace(bs, " ", "", -1)
+	//check match 01101...
+	mtc, err := regexp.MatchString("^[01]*$", nbs)
+	if err != nil {
+		return Bytes{}, ErrInMatchString
+	}
+	if mtc == false {
+		return Bytes{}, ErrBadFormat
+	}
+	//check len % 8 == 0
+	diff := len(nbs) % 8
+	if diff != 0 {
+		nbs = strings.Repeat("0", 8-diff) + nbs
+	}
+	//split in 8 bits
+	c := len(nbs)/8
+	hexs := make([]string, c)
+	for i:=0; i < c; i++{
+		hexs[i] = nbs[i*8:(i*8)+8]
+	}
+	//parse string (base-2) to int
+	byts := make([]byte, c)
+	for i:=0; i < c; i++{
+		v, _ := strconv.ParseInt(hexs[i], 2, 10)
+		byts[i] = byte(v)
+	}
+	//result
+	return Bytes{byts, len(byts)}, nil
 }
 
 func NewByteOperation() ByteOperation {

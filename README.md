@@ -1,16 +1,16 @@
 # Bitwiser
 Bitwiser is an simple library for operations bit-to-bit (bitwise) and byte-to-byte (here is call bytewise).
 
-##Objective
+## Objective
 Wrap operations bitwise and support a help for n-bytes operations.
 
-##Structs and Interfaces
+## Structs and Interfaces
 
 * BitOperation interface - allows bitwise operations using literal name (AND, OR, XOR, NOT, SHIFT_LEFT, SHIFT_RIGHT);
 * ByteOperation interface - allows n-bytes operations using literal name (idem);
 * Bytes struct - wrap an bytes array that is used in n-bytes operations.
 
-##Structures
+## Structures
 
 ```
 type BitOperation interface{
@@ -37,13 +37,13 @@ type ByteOperation interface{
 }
 ```
 
-##Download
+## Download
 Download code source by command:
 ```
 $ go get -u github.com/aristofanio/bitwiser
 ```
 
-##Use
+## Use
 Create an BitOperation or an ByteOperation using the follows funcs:
 ```Go
 
@@ -58,24 +58,60 @@ bytOp := bitwiser.NewByteOperation()
 After just call methods and the params in byte or bytes(bitwiser.Bytes) according to your need.
 
 
-##Examples
+## Examples
 
 AND Bitwise operation:
 ```Go
-op := NewBitOperation()
-rs := op.And(0x10, 0x10)
-println(fmt.Sprintf("0x%x", rs))
-//output: 0x10
+package main
+
+import (
+  "fmt"
+  "github.com/aristofanio/bitwiser"
+)
+
+func main(){
+  op := bitwiser.NewBitOperation()
+  rs := op.And(0x10, 0x10)
+  println(fmt.Sprintf("0x%x", rs)) //output: 0x10
+}
 
 ```
 
 XOR and AND Bitwise operation:
 ```Go
-op := NewBitOperation()
-r0 := op.And(0x10, 0x10)
-r1 := op.Xor(r0, 0x10)
-println(fmt.Sprintf("0x%x", r1))
-//output: 0x00
+package main
+
+import (
+  "fmt"
+  "github.com/aristofanio/bitwiser"
+)
+
+func main(){
+  op := bitwiser.NewBitOperation()
+  rs := op.Xor(0x11, op.And(0x10, 0x10))
+  println(fmt.Sprintf("0x%x", rs)) //output: 0x01 or 0x1
+}
+```
+
+XOR and AND 'Bytewise' operation for long bytes like descript in
+[https://stackoverflow.com/questions/28997600/golang-bitwise-operation-on-very-long-binary-bit-string-representation](Stackoverflow):
+```Go
+package main
+
+import (
+  "fmt"
+  "github.com/aristofanio/bitwiser"
+)
+
+func main(){
+  //
+  a := []byte{0x01, 0x11, 0x00}// 0x011100
+  b := []byte{0x00, 0x00, 0x11}// 0x000011
+  //
+  op := bitwiser.NewByteOperation()
+  rs := op.Or(bitwiser.Bytes{a, len(a)}, bitwiser.Bytes{b, len(b)})
+  println(fmt.Sprintf("0x%x", rs)) //output: 0x011111
+}
 ```
 
 

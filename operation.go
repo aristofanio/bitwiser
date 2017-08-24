@@ -179,6 +179,10 @@ func NewBitOperation() BitOperation {
 	return &bitwiseOp{}
 }
 
+func NewBytes(bs []byte) Bytes {
+	return Bytes{bs, len(bs)}
+}
+
 func NewByteOperation() ByteOperation {
 	return &bytewiseOp{&bitwiseOp{}}
 }

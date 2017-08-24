@@ -107,6 +107,137 @@ func TestSimpleBitwiseOp_ShiftRight(t *testing.T) {
 	}
 }
 
+func TestBytewiseOp_And(t *testing.T) {
+	op := NewByteOperation()
+	//
+	inOut := []struct {
+		a Bytes
+		b Bytes
+		c Bytes
+	}{
+		{
+			Bytes{[]byte{0x10}, 1},
+			Bytes{[]byte{0x10}, 1},
+			Bytes{[]byte{0x10}, 1}},
+		{
+			Bytes{[]byte{0x11}, 1},
+			Bytes{[]byte{0x10}, 1},
+			Bytes{[]byte{0x10}, 1}},
+	}
+	//
+	for k, v := range  inOut {
+		//
+		r, e := op.And(v.a, v.b)
+		if e != nil {
+			t.Errorf("Test#%d: %s with error %s", k, "op.And", e.Error())
+		}
+		//
+		if r.ToInt() != v.c.ToInt() {
+			t.Errorf("Test#%d: %s with error. Expected: 0x%x. Result: 0x%x", k, "op.And", v.c.b, r.b)
+		} else {
+			t.Logf("Test#%d: %s with success. Expected: 0x%x. Result: 0x%x", k, "op.And", v.c.b, r.b)
+		}
+	}
+
+}
+
+func TestBytewiseOp_Or(t *testing.T) {
+	op := NewByteOperation()
+	//
+	inOut := []struct {
+		a Bytes
+		b Bytes
+		c Bytes
+	}{
+		{
+			Bytes{[]byte{0x10}, 1},
+			Bytes{[]byte{0x10}, 1},
+			Bytes{[]byte{0x10}, 1}},
+		{
+			Bytes{[]byte{0x11}, 1},
+			Bytes{[]byte{0x10}, 1},
+			Bytes{[]byte{0x11}, 1}},
+	}
+	//
+	for k, v := range  inOut {
+		//
+		r, e := op.Or(v.a, v.b)
+		if e != nil {
+			t.Errorf("Test#%d: %s with error %s", k, "op.Or", e.Error())
+		}
+		//
+		if r.ToInt() != v.c.ToInt() {
+			t.Errorf("Test#%d: %s with error. Expected: 0x%x. Result: 0x%x", k, "op.Or", v.c.b, r.b)
+		} else {
+			t.Logf("Test#%d: %s with success. Expected: 0x%x. Result: 0x%x", k, "op.Or", v.c.b, r.b)
+		}
+	}
+}
+
+func TestBytewiseOp_Xor(t *testing.T) {
+	op := NewByteOperation()
+	//
+	inOut := []struct {
+		a Bytes
+		b Bytes
+		c Bytes
+	}{
+		{
+			Bytes{[]byte{0x10}, 1},
+			Bytes{[]byte{0x10}, 1},
+			Bytes{[]byte{0x00}, 1}},
+		{
+			Bytes{[]byte{0x11}, 1},
+			Bytes{[]byte{0x10}, 1},
+			Bytes{[]byte{0x01}, 1}},
+	}
+	//
+	for k, v := range  inOut {
+		//
+		r, e := op.Xor(v.a, v.b)
+		if e != nil {
+			t.Errorf("Test#%d: %s with error %s", k, "op.Xor", e.Error())
+		}
+		//
+		if r.ToInt() != v.c.ToInt() {
+			t.Errorf("Test#%d: %s with error. Expected: 0x%x. Result: 0x%x", k, "op.Xor", v.c.b, r.b)
+		} else {
+			t.Logf("Test#%d: %s with success. Expected: 0x%x. Result: 0x%x", k, "op.Xor", v.c.b, r.b)
+		}
+	}
+
+}
+
+func TestBytewiseOp_Not(t *testing.T) {
+	op := NewByteOperation()
+	//
+	inOut := []struct {
+		a Bytes
+		c Bytes
+	}{
+		{
+			Bytes{[]byte{0x10}, 1},
+			Bytes{[]byte{0xEF}, 1}},
+		{
+			Bytes{[]byte{0x11}, 1},
+			Bytes{[]byte{0xEE}, 1}},
+	}
+	//
+	for k, v := range  inOut {
+		//
+		r, e := op.Not(v.a)
+		if e != nil {
+			t.Errorf("Test#%d: %s with error %s", k, "op.Not", e.Error())
+		}
+		//
+		if r.ToInt() != v.c.ToInt() {
+			t.Errorf("Test#%d: %s with error. Expected: 0x%x. Result: 0x%x", k, "op.Not", v.c.b, r.b)
+		} else {
+			t.Logf("Test#%d: %s with success. Expected: 0x%x. Result: 0x%x", k, "op.Not", v.c.b, r.b)
+		}
+	}
+}
+
 func TestBytewiseOp_ShiftLeft(t *testing.T) {
 	op := NewByteOperation()
 	//
@@ -177,13 +308,13 @@ func TestBytewiseOp_ShiftRight(t *testing.T) {
 		//
 		r, e := op.ShiftRight(v.a, v.b)
 		if e != nil {
-			t.Errorf("Test#%d: %s with error %s", k, "op.ShiftLeft", e.Error())
+			t.Errorf("Test#%d: %s with error %s", k, "op.ShiftRight", e.Error())
 		}
 		//
 		if r.ToInt() != v.c.ToInt() {
-			t.Errorf("Test#%d: %s with error. Expected: 0x%x. Result: 0x%x", k, "op.ShiftLeft", v.c.b, r.b)
+			t.Errorf("Test#%d: %s with error. Expected: 0x%x. Result: 0x%x", k, "op.ShiftRight", v.c.b, r.b)
 		} else {
-			t.Logf("Test#%d: %s with success. Expected: 0x%x. Result: 0x%x", k, "op.ShiftLeft", v.c.b, r.b)
+			t.Logf("Test#%d: %s with success. Expected: 0x%x. Result: 0x%x", k, "op.ShiftRight", v.c.b, r.b)
 		}
 	}
 }

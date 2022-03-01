@@ -94,7 +94,7 @@ func main(){
 ```
 
 XOR and AND 'Bytewise' operation for long bytes like descript in
-[https://stackoverflow.com/questions/28997600/golang-bitwise-operation-on-very-long-binary-bit-string-representation](Stackoverflow):
+[Stackoverflow](https://stackoverflow.com/questions/28997600/golang-bitwise-operation-on-very-long-binary-bit-string-representation):
 ```Go
 package main
 
